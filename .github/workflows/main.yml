@@ -1,0 +1,31 @@
+name: Vigilante Oikos BI
+
+on:
+  schedule:
+    # CRON UTC: Minuto 45 de las horas indicadas (+5h respecto a Colombia)
+    - cron: '45 0,3,6,9,12,15,18,21 * * *'
+    
+  workflow_dispatch: # Botón para probar manual cuando quiera
+
+jobs:
+  vigilancia:
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: Descargar código
+        uses: actions/checkout@v3
+
+      - name: Instalar Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.9'
+
+      - name: Instalar Librerías
+        run: |
+          pip install -r requirements.txt
+
+      - name: Ejecutar Robot Centinela
+        env:
+          EMAIL_USER: ${{ secrets.EMAIL_USER }}
+          EMAIL_PASS: ${{ secrets.EMAIL_PASS }}
+        run: python main.py
